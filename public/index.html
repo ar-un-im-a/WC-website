@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GCEK World Cup 2026 Portal</title>
+    
+    <style>
+        /* Immersive Premium Sports Background & Theme Variables */
+        :root {
+            --bg-dark: rgba(10, 10, 12, 0.6);
+            --card-bg: rgba(20, 20, 23, 0.75);
+            --gold: #d4af37;
+            --gold-bright: #f3e5ab;
+            --text-main: #f0f0f5;
+            --text-muted: #a0a0aa;
+            --border: rgba(212, 175, 55, 0.25);
+            --neon-red: #ef4444;
+            --pathway-color: rgba(212, 175, 55, 0.35);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: 
+                linear-gradient(to bottom, rgba(5, 5, 8, 0.45), rgba(10, 10, 12, 0.75)),
+                url('background.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: var(--text-main);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Intro Splash Screen */
+        .intro-container {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: radial-gradient(circle, #161622 0%, #050508 100%);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 1000;
+            transition: transform 1s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.8s ease;
+        }
+        .intro-content { text-align: center; max-width: 600px; padding: 20px; }
+        .intro-logo { width: 150px; height: 150px; margin: 0 auto 25px auto; border-radius: 50%; border: 3px solid var(--gold); object-fit: cover; }
+        .intro-text h1 { color: var(--gold); letter-spacing: 2px; margin-bottom: 15px; }
+        .intro-container.slide-off { transform: translateX(-100%); opacity: 0; pointer-events: none; }
+
+        /* Main Structural Containers */
+        #app-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            backdrop-filter: blur(2px);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .app-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 15px 5%;
+            border-bottom: 1px solid var(--border);
+            background-color: rgba(20, 20, 23, 0.85);
+        }
+        .header-brand { display: flex; align-items: center; }
+        .side-logo { width: 45px; height: 45px; object-fit: cover; border-radius: 50%; margin-right: 15px; border: 1px solid var(--gold); }
+        .app-header h2 { color: var(--gold); font-size: 1.4rem; letter-spacing: 1px; }
+
+        /* Back Navigation for Sub-Pages */
+        .back-nav-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 20px auto 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: flex-start;
+        }
+        .btn-back-home {
+            background: rgba(20, 20, 23, 0.8);
+            border: 1px solid var(--border);
+            color: var(--gold);
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        .btn-back-home:hover {
+            background: var(--gold);
+            color: #000;
+        }
+
+        .view-panel { 
+            flex: 1; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 20px; 
+        }
+        
+        /* Permanent Tournament Landing Showcase Header Card (The Home Page View) */
+        .showcase-hub {
+            background: radial-gradient(circle at top, rgba(25, 25, 30, 0.85) 0%, rgba(13, 13, 16, 0.95) 100%);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 50px 40px;
+            max-width: 900px;
+            width: 100%;
+            margin: auto;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+        }
+        .showcase-logo {
+            width: 125px;
+            height: 125px;
+            border-radius: 50%;
+            border: 2px solid var(--gold);
+            object-fit: cover;
+            margin-bottom: 25px;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+        }
+        .showcase-hub h1 {
+            color: var(--gold);
+            font-size: 2.5rem;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+        .showcase-hub p {
+            font-size: 1.25rem;
+            line-height: 1.7;
+            max-width: 780px;
+            margin: 0 auto 30px auto;
+            color: #fff;
+            text-shadow: 0 1px 8px rgba(0,0,0,0.6);
+        }
+        .showcase-host {
+            color: var(--gold-bright);
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-bottom: 45px;
+            text-transform: uppercase;
+            font-size: 1rem;
+        }
+
+        /* Hub Feature Navigation Shortcuts Matrix placed at the bottom */
+        .hub-nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .hub-nav-btn {
+            background: rgba(10, 10, 12, 0.8);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 18px 22px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .hub-nav-btn span {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: normal;
+        }
+        .hub-nav-btn:hover {
+            border-color: var(--gold);
+            background: linear-gradient(135deg, rgba(35, 30, 15, 0.9) 0%, rgba(15, 15, 18, 0.95) 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+        }
+
+        /* Sub-page Specific Layout Classes */
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 30px;
+            width: 100%;
+            max-width: 480px;
+            box-shadow: 0 12px 32px rgba(0,0,0,0.6);
+            backdrop-filter: blur(8px);
+        }
+        .card h3 { margin-bottom: 20px; color: var(--gold); text-align: center; letter-spacing: 1px; }
+
+        /* Input Controls and Navigation Elements */
+        .input-group { margin-bottom: 20px; text-align: left; }
+        .input-group label { display: block; margin-bottom: 8px; color: var(--text-muted); font-size: 0.9rem; }
+        .input-group input, .input-group select {
+            width: 100%; padding: 12px; background-color: rgba(10, 10, 12, 0.8);
+            border: 1px solid var(--border); border-radius: 8px; color: #fff; font-size: 1rem;
+        }
+        .input-group input:focus, .input-group select:focus { border-color: #fff; outline: none; }
+        
+        .btn-primary {
+            width: 100%; padding: 12px; background-color: var(--gold); color: #000;
+            border: none; border-radius: 8px; font-size: 1rem; font-weight: bold;
+            cursor: pointer; transition: all 0.2s;
+        }
+        .btn-primary:hover { background-color: var(--gold-bright); transform: translateY(-1px); }
+
+        /* Team Flag Configuration */
+        .flag-icon {
+            width: 24px;
+            height: 16px;
+            object-fit: cover;
+            border-radius: 2px;
+            vertical-align: middle;
+            margin: 0 6px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+        }
+
+        /* Horizontal Bracket Schema */
+        .diagram-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 1200px;
+            margin-top: 15px;
+            padding: 10px 0;
+        }
+        .diagram-svg-backdrop {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 1;
+        }
+        .diagram-container {
+            position: relative; z-index: 2; width: 100%;
+            display: grid; grid-template-columns: 1.25fr 1fr 1fr 1fr; gap: 25px; align-items: center;
+        }
+        .diagram-column { display: flex; flex-direction: column; justify-content: space-around; height: 560px; }
+        .diagram-matchup {
+            background: rgba(13, 13, 16, 0.9); border: 1px solid var(--border); border-radius: 12px;
+            padding: 18px 14px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); transition: border-color 0.3s;
+        }
+        .diagram-matchup:hover { border-color: var(--gold); }
+        .diagram-match-id {
+            font-size: 0.75rem; color: var(--gold); font-weight: bold; text-transform: uppercase;
+            letter-spacing: 1px; margin-bottom: 8px; border-bottom: 1px dashed rgba(212, 175, 55, 0.15);
+            padding-bottom: 6px; display: flex; justify-content: space-between;
+        }
+        .diagram-match-id span { color: var(--text-muted); font-weight: normal; }
+        .diagram-row-team { display: flex; align-items: center; padding: 8px 4px; font-weight: 500; font-size: 0.95rem; }
+        .diagram-row-vs {
+            text-align: center; font-size: 0.7rem; font-weight: bold; color: var(--text-muted);
+            background: rgba(255,255,255,0.04); padding: 2px 0; margin: 4px 0; border-radius: 4px; letter-spacing: 2px;
+        }
+        .diagram-sf-box {
+            background: linear-gradient(145deg, rgba(20, 18, 24, 0.9), rgba(12, 12, 15, 0.93));
+            border: 1px solid var(--border); border-radius: 10px; padding: 18px 14px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        .diagram-sf-box h5 { font-size: 0.8rem; color: var(--gold); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+        .diagram-placeholder { font-size: 0.85rem; color: var(--text-muted); font-style: italic; padding: 4px 0; }
+        
+        .diagram-final-box {
+            background: rgba(16, 16, 20, 0.9); border: 1px solid var(--border); border-radius: 12px;
+            padding: 22px 18px; text-align: center; box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+        }
+        .diagram-final-box h4 { font-size: 0.9rem; color: var(--text-main); margin-bottom: 10px; letter-spacing: 1px; text-transform: uppercase; }
+        
+        .diagram-winner-card {
+            background: radial-gradient(circle at top, rgba(35, 28, 8, 0.95) 0%, rgba(12, 12, 14, 0.98) 100%);
+            border: 2px solid var(--gold); border-radius: 12px; padding: 18px 14px; text-align: center;
+            box-shadow: 0 0 20px rgba(212,175,55,0.2); animation: ultimate-glow 3s infinite alternate; max-width: 230px; margin: 0 auto;
+        }
+        @keyframes ultimate-glow {
+            0% { box-shadow: 0 0 12px rgba(212,175,55,0.15); }
+            100% { box-shadow: 0 0 25px rgba(212,175,55,0.35); border-color: var(--gold-bright); }
+        }
+        .diagram-winner-card h3 { font-size: 0.85rem; color: #fff; letter-spacing: 1.5px; margin-bottom: 10px; text-transform: uppercase; }
+        .trophy-space { font-size: 2rem; margin-bottom: 4px; }
+
+        /* Live Tracker Updates */
+        .live-score-banner {
+            background: linear-gradient(135deg, rgba(28, 12, 12, 0.85) 0%, rgba(15, 15, 18, 0.95) 100%);
+            border: 1px solid var(--neon-red); border-radius: 16px; padding: 25px; width: 100%; max-width: 550px; box-shadow: 0 12px 32px rgba(0,0,0,0.6);
+        }
+        .live-ticker-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .live-pulse-badge { background-color: var(--neon-red); color: white; padding: 4px 10px; font-size: 0.75rem; border-radius: 6px; font-weight: bold; animation: pulse-glow 1.8s infinite; }
+        @keyframes pulse-glow {
+            0% { opacity: 0.6; box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+            70% { opacity: 1; box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
+            100% { opacity: 0.6; box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+        .live-match-scoregrid { display: flex; align-items: center; justify-content: space-around; font-size: 1.6rem; font-weight: bold; margin: 20px 0; }
+        .live-team-node { display: flex; align-items: center; gap: 10px; font-size: 1.2rem; }
+        .live-score-display { background: #000; color: var(--gold); padding: 6px 14px; border-radius: 8px; border: 1px solid var(--border); font-family: monospace; }
+        .match-status-container { margin-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 15px; }
+        .status-section-title { font-size: 0.85rem; color: var(--gold); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; font-weight: bold; }
+        .timeline-event { display: flex; align-items: center; justify-content: space-between; font-size: 0.85rem; padding: 6px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.03); }
+        .timeline-time { color: var(--gold-bright); font-weight: bold; width: 60px; }
+
+        /* Bracket Predictor Layout */
+        .bracket-container { width: 100%; max-width: 1100px; margin: 0 auto; text-align: center; }
+        .instruction-note { font-size: 0.85rem; color: var(--gold-bright); margin-bottom: 20px; }
+        .bracket-tree { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; align-items: center; margin-top: 30px; }
+        .bracket-column { display: flex; flex-direction: column; gap: 40px; justify-content: space-around; }
+        .matchup { display: flex; flex-direction: column; gap: 8px; background-color: rgba(255,255,255,0.03); padding: 12px; border-radius: 12px; border: 1px dashed var(--border); }
+        .node {
+            background-color: rgba(10, 10, 12, 0.85); border: 1px solid var(--border); color: var(--text-main);
+            padding: 12px; border-radius: 6px; cursor: pointer; font-weight: 500; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease;
+        }
+        .node:hover { background-color: rgba(30, 30, 38, 0.95); border-color: var(--gold); }
+        .finals-box { margin: 40px auto; max-width: 350px; }
+        .winner-node { width: 100%; padding: 15px; font-weight: bold; border: 2px solid var(--gold); }
+        
+        .submission-card { width: 100%; max-width: 550px !important; margin: 25px auto 0 auto; box-shadow: 0 12px 32px rgba(0,0,0,0.6); }
+        .table-card { max-width: 1200px !important; width: 100%; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.95rem; text-align: left; }
+        th, td { padding: 14px 16px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+        th { color: var(--gold); font-weight: 600; background-color: rgba(10, 10, 12, 0.4); }
+        .gold-txt { color: var(--gold); font-weight: bold; }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <!-- INTRO SPLASH SCREEN OVERLAY -->
+    <div id="intro-screen" class="intro-container">
+        <div class="intro-content">
+            <img src="logo.jpeg" alt="GCEK World Cup Logo" class="intro-logo">
+            <div class="intro-text">
+                <h1>GCEK WORLD CUP 2026</h1>
+                <p style="font-size: 1.1rem; line-height: 1.6; color: var(--text-main); margin-bottom: 20px;">
+                    Experience the passion, intensity, and excitement of football as teams battle for the ultimate championship crown.
+                </p>
+                <p style="color: var(--gold-bright); font-weight: 600; letter-spacing: 1px;">Hosted by GCEK'23.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN APP WRAPPER CONTAINER -->
+    <div id="app-container">
+        
+        <header class="app-header">
+            <div class="header-brand">
+                <img src="logo.jpeg" alt="GCEK Logo" class="side-logo">
+                <h2>GCEK WC '26 Portal</h2>
+            </div>
+            <div style="font-size: 0.85rem; color: var(--gold-bright); background: rgba(0,0,0,0.6); padding: 5px 14px; border-radius: 20px; border: 1px solid var(--gold); font-weight: bold; letter-spacing: 1px;">
+                🔥 HOSTED BY GCEK'23
+            </div>
+        </header>
+
+        <!-- SUB-PAGE BACK BUTTON NAVIGATION (HIDDEN ON HOME PAGE VIEW) -->
+        <div id="back-navigation" class="back-nav-container hidden">
+            <button class="btn-back-home" onclick="returnToHome()">← Back to Main Menu</button>
+        </div>
+
+        <!-- ================= HOME PAGE SCREEN VIEW ================= -->
+        <main id="home-view" class="view-panel">
+            <section class="showcase-hub">
+                <img src="logo.jpeg" alt="GCEK Championship Trophy Badge" class="showcase-logo">
+                <h1>GCEK WORLD CUP 2026</h1>
+                <!-- YOUR PASSIONATE CUSTOM NOTE UPDATED HERE -->
+                <p>
+                    This is where the true colors of GCEK shine! It is time to defend your team's global badge, feel the thunderous heartbeat of the stadium crowd, and watch our players battle for ultimate tournament. The line is drawn—let the roaring spirit begin!
+                </p>
+                <div class="showcase-host">Brought to life by GCEK'23 for the ultimate campus glory</div>
+                
+                <!-- ROUTING NAVIGATION LINKS (STAYS EXCLUSIVELY AT THE BOTTOM) -->
+                <div class="hub-nav-grid">
+                    <!-- ICON UPDATED TO STRATEGIC TACTICAL CHART (📋) -->
+                    <button class="hub-nav-btn" onclick="navigateToPage('fixtures')">
+                        <span style="color: var(--gold); font-size: 1.3rem;">📋</span>
+                        Visual Fixtures Diagram
+                        <span>View roadmap layout tree</span>
+                    </button>
+                    <button class="hub-nav-btn" onclick="navigateToPage('live')">
+                        <span style="color: var(--neon-red); font-size: 1.3rem;">🔴</span>
+                        Live Updates
+                        <span>Real-time score counters</span>
+                    </button>
+                    <button class="hub-nav-btn" onclick="navigateToPage('predictions')">
+                        <span style="color: var(--gold); font-size: 1.3rem;">🏆</span>
+                        Predictor Bracket
+                        <span>Lock in your unique entry</span>
+                    </button>
+                </div>
+            </section>
+        </main>
+
+        <!-- ================= DEDICATED SEPARATE FEATURE PAGES ================= -->
+
+        <!-- PAGE: FIXTURES STRUCTURAL SCHEDULER DIAGRAM -->
+        <div id="fixtures-page" class="view-panel hidden">
+            <div class="card table-card" style="max-width: 1200px !important; overflow-x: auto;">
+                <h3 style="text-align: center; margin-bottom: 5px;">Official Championship Bracket Tree</h3>
+                <p style="text-align: center; font-size: 0.85rem; color: var(--gold-bright); margin-bottom: 25px;">Left-to-right orderly elimination structure roadmap</p>
+                
+                <div class="diagram-wrapper">
+                    <svg class="diagram-svg-backdrop" viewBox="0 0 1200 560" preserveAspectRatio="none">
+                        <g fill="none" stroke="url(#goldGradient)" stroke-dasharray="1 0">
+                            <path d="M 310,80 L 350,80 L 350,145 L 380,145" stroke-width="2.2"/>
+                            <path d="M 310,210 L 350,210 L 350,145 L 380,145" stroke-width="2.2"/>
+                            <path d="M 310,350 L 350,350 L 350,415 L 380,415" stroke-width="2.2"/>
+                            <path d="M 310,550 L 350,550 L 350,415 L 380,415" stroke-width="2.2"/>
+                            <path d="M 620,145 L 635,145 L 635,280 L 650,280" stroke-width="2.2"/>
+                            <path d="M 620,415 L 635,415 L 635,280 L 650,280" stroke-width="2.2"/>
+                            <path d="M 850,280 L 1000,280 L 1000,300" stroke-width="3" stroke="var(--gold)"/>
+                        </g>
+                        <defs>
+                            <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="#d4af37" stop-opacity="0.4"/>
+                                <stop offset="70%" stop-color="#f3e5ab" stop-opacity="0.95"/>
+                                <stop offset="100%" stop-color="#d4af37" stop-opacity="0.85"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+
+                    <div class="diagram-container">
+                        <div class="diagram-column">
+                            <div class="diagram-matchup">
+                                <div class="diagram-match-id">Match #01 <span>Arena A</span></div>
+                                <div class="diagram-row-team"><img class="flag-icon" src="https://flagcdn.com/br.svg" alt="BRA"> Brazil (BRA)</div>
+                                <div class="diagram-row-vs">VS</div>
+                                <div class="diagram-row-team"><img class="flag-icon" src="https://flagcdn.com/fr.svg" alt="FR"> France (FRA)</div>
+                            </div>
+                            <div class="diagram-matchup">
+                                <div class="diagram-match-id">Match #02 <span>Arena B</span></div>
+                                <div class="diagram-row-team"><img class="flag-icon" src="https://flagcdn.com/ar.svg" alt="AR"> Argentina (ARG)</div>
+                                <div class="diagram-row-vs">VS</div>
+                                <div class="diagram-row-team"><img class="flag-icon" src="https://flagcdn.com/de.svg" alt="DE"> Germany (GER)</div>
+                            </div>
+                            <div class="diagram-matchup">
+                                <div class="diagram-match-id">Match #03 <span>Main Ground</span></div>
+                                <div class="diagram-row-team"><img class="flag-icon" src="https://flagcdn.com/es.svg" alt="ES"> Spain (ESP)</div>
+                                <div class="diagram-row-vs">VS</div>
+                                <div class="diagram-row-team"><img class="flag-icon" src="https://flagcdn.com/pt.svg" alt="PT"> Portugal (POR)</div>
+                            </div>
+                            <div class="diagram-matchup">
+                                <div class="diagram-match-id">Match #04 <span>Main Ground</span></div>
+                                <div class="diagram-row-team"><img class="flag-icon" src="https://flagcdn.com/gb-eng.svg" alt="ENG"> England (ENG)</div>
+                                <div class="diagram-row-vs">VS</div>
+                                <div class="diagram-row-team"><img class="flag-icon" src="https://flagcdn.com/ma.svg" alt="MAR"> Morocco (MAR)</div>
+                            </div>
+                        </div>
+
+                        <div class="diagram-column">
+                            <div class="diagram-sf-box" style="margin-bottom: 35px; margin-top: 10px;">
+                                <h5>Semi Final #1</h5>
+                                <div class="diagram-placeholder">Winner Match #01</div>
+                                <div style="color: var(--gold); font-size: 0.65rem; font-weight: bold; margin: 4px 0;">V / S</div>
+                                <div class="diagram-placeholder">Winner Match #02</div>
+                            </div>
+                            <div class="diagram-sf-box" style="margin-top: 35px; margin-bottom: 10px;">
+                                <h5>Semi Final #2</h5>
+                                <div class="diagram-placeholder">Winner Match #03</div>
+                                <div style="color: var(--gold); font-size: 0.65rem; font-weight: bold; margin: 4px 0;">V / S</div>
+                                <div class="diagram-placeholder">Winner Match #04</div>
+                            </div>
+                        </div>
+
+                        <div class="diagram-column" style="justify-content: center;">
+                            <div class="diagram-final-box">
+                                <h4>🏆 Grand Final Hub</h4>
+                                <div class="diagram-placeholder" style="color: var(--text-main);">Winner Semi-Final 1</div>
+                                <div style="color: var(--gold); font-weight: bold; font-size: 0.85rem; margin: 8px 0; letter-spacing: 2px;">V / S</div>
+                                <div class="diagram-placeholder" style="color: var(--text-main);">Winner Semi-Final 2</div>
+                            </div>
+                        </div>
+
+                        <div class="diagram-column" style="justify-content: center;">
+                            <div class="diagram-winner-card">
+                                <div class="trophy-space">🏆</div>
+                                <h3>Champion Crown</h3>
+                                <div class="diagram-placeholder" style="color: var(--gold); font-weight: bold; font-style: normal; letter-spacing: 1px; font-size: 0.75rem;">WORLD CUP 2026 WINNER</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE: LIVE SCORES FEED TIMELINE -->
+        <div id="live-page" class="view-panel hidden">
+            <div class="live-score-banner">
+                <div class="live-ticker-header">
+                    <span class="live-pulse-badge">● LIVE TRACKER</span>
+                    <span style="color: var(--gold-bright); font-size: 0.85rem; font-weight: bold;">Matchday Group C</span>
+                </div>
+                
+                <div class="live-match-scoregrid">
+                    <div class="live-team-node">
+                        <img class="flag-icon" style="width: 32px; height: 22px;" src="https://flagcdn.com/br.svg" alt="Brazil">
+                        <span>BRA</span>
+                    </div>
+                    <div class="live-score-display">2</div>
+                    <div style="color: var(--text-muted); font-size: 1rem;">:</div>
+                    <div class="live-score-display">1</div>
+                    <div class="live-team-node">
+                        <span>FRA</span>
+                        <img class="flag-icon" style="width: 32px; height: 22px;" src="https://flagcdn.com/fr.svg" alt="France">
+                    </div>
+                </div>
+                <p style="color: #fff; font-weight: 600; text-align: center; margin-bottom: 5px;">Second Half - 76'</p>
+                <p style="color: var(--text-muted); font-size: 0.8rem; text-align: center;">Stadium Venue Arena A</p>
+
+                <!-- REPLACED OLD MATCH TIMELINE EVENTS WITH TEAM NAMES AND GOALS EARNED ON PREVIOUS MATCH -->
+                <div class="match-status-container">
+                    <div class="status-section-title">Previous Matchday Board Results</div>
+                    <div class="timeline-event">
+                        <div class="timeline-time">ARG 3 : 1 GER</div>
+                        <div style="flex: 1; text-align: right; padding-left: 10px; color: var(--text-muted);">L. Messi (2), J. Álvarez | K. Havertz</div>
+                    </div>
+                    <div class="timeline-event">
+                        <div class="timeline-time">ESP 0 : 2 POR</div>
+                        <div style="flex: 1; text-align: right; padding-left: 10px; color: var(--text-muted);">C. Ronaldo, B. Fernandes</div>
+                    </div>
+                    <div class="timeline-event">
+                        <div class="timeline-time">ENG 1 : 1 MAR</div>
+                        <div style="flex: 1; text-align: right; padding-left: 10px; color: var(--text-muted);">H. Kane | H. Ziyech</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE: PREDICTOR INTERACTIVE BRACKET SELECTION TREE -->
+        <div id="predictions-page" class="view-panel hidden">
+            <div class="bracket-container">
+                <h3>Interactive Knockout Prediction Bracket</h3>
+                <p class="instruction-note">Click on any team node to advance them automatically to the next match round slot.</p>
+                
+                <div class="bracket-tree">
+                    <div class="bracket-column">
+                        <h4>Quarter Finals</h4>
+                        <div class="matchup">
+                            <button class="node qf-node" id="qf1_a" onclick="advanceTeam('qf1_a', 'sf1_left')">
+                                <img class="flag-icon" src="https://flagcdn.com/br.svg" alt="BR">Brazil
+                            </button>
+                            <button class="node qf-node" id="qf1_b" onclick="advanceTeam('qf1_b', 'sf1_left')">
+                                <img class="flag-icon" src="https://flagcdn.com/fr.svg" alt="FR">France
+                            </button>
+                        </div>
+                        <div class="matchup">
+                            <button class="node qf-node" id="qf2_a" onclick="advanceTeam('qf2_a', 'sf1_right')">
+                                <img class="flag-icon" src="https://flagcdn.com/ar.svg" alt="AR">Argentina
+                            </button>
+                            <button class="node qf-node" id="qf2_b" onclick="advanceTeam('qf2_b', 'sf1_right')">
+                                <img class="flag-icon" src="https://flagcdn.com/de.svg" alt="DE">Germany
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bracket-column">
+                        <h4>Semi Finals</h4>
+                        <div class="matchup">
+                            <button class="node sf-node" id="sf1_left" onclick="advanceTeam('sf1_left', 'final_left')">Select Winner QF1</button>
+                            <button class="node sf-node" id="sf1_right" onclick="advanceTeam('sf1_right', 'final_left')">Select Winner QF2</button>
+                        </div>
+                        <div class="matchup">
+                            <button class="node sf-node" id="sf2_left" onclick="advanceTeam('sf2_left', 'final_right')">Select Winner QF3</button>
+                            <button class="node sf-node" id="sf2_right" onclick="advanceTeam('sf2_right', 'final_right')">Select Winner QF4</button>
+                        </div>
+                    </div>
+
+                    <div class="bracket-column">
+                        <h4>Quarter Finals</h4>
+                        <div class="matchup">
+                            <button class="node qf-node" id="qf3_a" onclick="advanceTeam('qf3_a', 'sf2_left')">
+                                <img class="flag-icon" src="https://flagcdn.com/es.svg" alt="ES">Spain
+                            </button>
+                            <button class="node qf-node" id="qf3_b" onclick="advanceTeam('qf3_b', 'sf2_left')">
+                                <img class="flag-icon" src="https://flagcdn.com/pt.svg" alt="PT">Portugal
+                            </button>
+                        </div>
+                        <div class="matchup">
+                            <button class="node qf-node" id="qf4_a" onclick="advanceTeam('qf4_a', 'sf2_right')">
+                                <img class="flag-icon" src="https://flagcdn.com/gb-eng.svg" alt="ENG">England
+                            </button>
+                            <button class="node qf-node" id="qf4_b" onclick="advanceTeam('qf4_b', 'sf2_right')">
+                                <img class="flag-icon" src="https://flagcdn.com/ma.svg" alt="MAR">Morocco
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="finals-box">
+                    <h4>Grand Final Championship Match</h4>
+                    <div class="matchup" style="margin-bottom: 15px;">
+                        <button class="node sf-node" id="final_left" onclick="advanceTeam('final_left', 'final-winner')">Finalist 1</button>
+                        <button class="node sf-node" id="final_right" onclick="advanceTeam('final_right', 'final-winner')">Finalist 2</button>
+                    </div>
+                    <h4>🏆 Predicted Tournament Champion 🏆</h4>
+                    <button class="node winner-node" id="final-winner" style="background: #201a05; border-color: var(--gold); color: var(--gold);">Select Champion</button>
+                </div>
+
+                <!-- ACCOLADES INPUT CARD -->
+                <div class="card submission-card">
+                    <h3>Tournament Accolades</h3>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 20px;">Complete performance predictions before processing submission registry parameters.</p>
+                    <div class="input-group">
+                        <label>🏆 Golden Boot Scorer</label>
+                        <input type="text" id="golden-boot-input" placeholder="e.g. Kylian Mbappé" required>
+                    </div>
+                    <div class="input-group">
+                        <label>🧤 Golden Glove Goalkeeper</label>
+                        <input type="text" id="golden-glove-input" placeholder="e.g. Emiliano Martínez" required>
+                    </div>
+                </div>
+
+                <!-- STUDENT VERIFICATION ENTRY CARD -->
+                <div class="card submission-card" style="margin-bottom: 40px;">
+                    <h3 style="color: var(--gold);">Student Verification</h3>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 20px;">Enter verification details below to log predictions. Limit: 1 entry per student.</p>
+                    
+                    <div class="input-group">
+                        <label>Full Name</label>
+                        <input type="text" id="auth-name" placeholder="John Doe" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Email ID</label>
+                        <input type="email" id="auth-email" placeholder="name@example.com" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Current Semester</label>
+                        <select id="auth-semester" required>
+                            <option value="" disabled selected>Select your semester</option>
+                            <option value="S1">Semester 1</option><option value="S2">Semester 2</option>
+                            <option value="S3">Semester 3</option><option value="S4">Semester 4</option>
+                            <option value="S5">Semester 5</option><option value="S6">Semester 6</option>
+                            <option value="S7">Semester 7</option><option value="S8">Semester 8</option>
+                        </select>
+                    </div>
+                    
+                    <button class="btn-primary" style="margin-top: 10px;" onclick="savePredictionsToServer()">Submit My Complete Bracket</button>
+                    <p id="auth-error" style="color: #ef4444; text-align: center; font-size: 0.85rem; margin-top: 12px;"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE: ADMINISTRATIVE OVERVIEW DATA MATRIX SPREADSHEET -->
+        <div id="admin-page" class="view-panel hidden">
+            <div class="card table-card" style="overflow-x: auto; max-width: 1200px !important;">
+                <h3>All Registered User Predictions Matrix</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Full Name</th><th>Email Address</th><th>Sem</th>
+                            <th>SF1 Left</th><th>SF1 Right</th><th>SF2 Left</th><th>SF2 Right</th>
+                            <th>Final Left</th><th>Final Right</th><th>Predicted Champ</th>
+                            <th>Golden Boot</th><th>Golden Glove</th>
+                        </tr>
+                    </thead>
+                    <tbody id="users-table-body"></tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- CLEAN JAVASCRIPT PAGE ROUTING LOGIC -->
+    <script>
+        function navigateToPage(pageId) {
+            document.getElementById('home-view').classList.add('hidden');
+            
+            document.getElementById('fixtures-page').classList.add('hidden');
+            document.getElementById('live-page').classList.add('hidden');
+            document.getElementById('predictions-page').classList.add('hidden');
+            document.getElementById('admin-page').classList.add('hidden');
+            
+            document.getElementById('back-navigation').classList.remove('hidden');
+            document.getElementById(pageId + '-page').classList.remove('hidden');
+            window.scrollTo(0, 0);
+        }
+
+        // Return to Menu Layout Controller
+        function returnToHome() {
+            document.getElementById('fixtures-page').classList.add('hidden');
+            document.getElementById('live-page').classList.add('hidden');
+            document.getElementById('predictions-page').classList.add('hidden');
+            document.getElementById('admin-page').classList.add('hidden');
+            
+            document.getElementById('back-navigation').classList.add('hidden');
+            document.getElementById('home-view').classList.remove('hidden');
+            window.scrollTo(0, 0);
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                const intro = document.getElementById('intro-screen');
+                if(intro) intro.classList.add('slide-off');
+                const container = document.getElementById('app-container');
+                if(container) container.style.opacity = '1';
+            }, 1200);
+        });
+    </script>
+    <script src="./script.js"></script>
+</body>
+</html>
